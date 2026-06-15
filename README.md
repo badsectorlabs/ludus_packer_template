@@ -8,7 +8,7 @@ Build it unchanged first, so you know your loop works:
 
 ```bash
 cd ..
-ludus templates add -d ./ludus_packer_template_template
+ludus templates add -d ./ludus_packer_template
 ludus templates build -n custom-debian-13-x64-template
 ludus templates logs -f    # watch the build (~10 min)
 ```
@@ -46,12 +46,12 @@ ludus templates logs -f
 
 ### A different OS entirely
 
-Swap `iso_url`/`iso_checksum`, replace `http/preseed.cfg`, and adapt `boot_command`. Don't do this from scratch — copy the relevant pieces from a [known-good template](https://github.com/badsectorlabs/ludus-source-bsl/tree/main/templates) (Windows with autounattend + virtio drivers, Rocky, Ubuntu, Kali, …). The full authoring reference lives in the [templates docs](https://docs.ludus.cloud/docs/using-ludus/templates).
+Swap `iso_url`/`iso_checksum`, replace `http/preseed.cfg`, and adapt `boot_command`. Don't do this from scratch — copy the relevant pieces from a [known-good template](https://github.com/badsectorlabs/ludus-source-bsl/tree/main/templates) (Windows with autounattend + virtio drivers, Rocky, Ubuntu, Kali, …). The full authoring reference lives in [Creating your own templates for Ludus](https://docs.ludus.cloud/docs/using-ludus/templates/#creating-your-own-templates-for-ludus).
 
 ## How it works (60 seconds)
 
 - A Ludus template directory is one `*.pkr.hcl` file plus supporting files. `ludus templates add -d .` uploads it; `ludus templates build` runs Packer on the Ludus server, which installs the OS from the ISO, runs the customize playbook, and saves the result as a Proxmox template.
-- The **required Ludus block** in `template.pkr.hcl` (marked, don't remove) is how Ludus injects server-specific values at build time — storage pools, Proxmox credentials, the NAT interface.
+- The **required Ludus variables block** in `template.pkr.hcl` (marked, don't remove) is how Ludus injects server-specific values at build time — storage pools, Proxmox credentials, the NAT interface. See the full list in [Creating your own templates for Ludus](https://docs.ludus.cloud/docs/using-ludus/templates/#creating-your-own-templates-for-ludus).
 - VMs in ranges are *clones* of the built template: builds are slow-once, deploys are fast-always.
 
 ## Share it
